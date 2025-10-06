@@ -62,6 +62,7 @@ export interface Dispute {
 
 export interface TelegramCallbackData {
   action: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 }
 

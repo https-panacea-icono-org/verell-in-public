@@ -1,6 +1,6 @@
-import { Telegraf, Markup, Context } from 'telegraf';
+import { Telegraf, Context } from 'telegraf';
 import { v4 as uuidv4 } from 'uuid';
-import { Order, Trade, OrderType } from '../types';
+import { Order, OrderType } from '../types';
 import { OrderBook, TradeManager } from '../services/trading';
 import { BlockchainService } from '../services/blockchain';
 
@@ -283,32 +283,32 @@ Your funds are always in your control. We never hold your keys! 🔐
     await ctx.reply('Cancel functionality - to be implemented based on context');
   }
 
-  private async handleAcceptOrder(ctx: Context): Promise<void> {
-    const orderId = ctx.match![1];
+  private async handleAcceptOrder(ctx: Context & { match: RegExpMatchArray }): Promise<void> {
+    const orderId = ctx.match[1];
     await ctx.reply(`Accepting order ${orderId}...`);
     // Implementation for accepting orders
   }
 
-  private async handlePaymentSent(ctx: Context): Promise<void> {
-    const tradeId = ctx.match![1];
+  private async handlePaymentSent(ctx: Context & { match: RegExpMatchArray }): Promise<void> {
+    const tradeId = ctx.match[1];
     await ctx.reply(`Marking payment as sent for trade ${tradeId}...`);
     // Implementation for marking payment as sent
   }
 
-  private async handlePaymentReceived(ctx: Context): Promise<void> {
-    const tradeId = ctx.match![1];
+  private async handlePaymentReceived(ctx: Context & { match: RegExpMatchArray }): Promise<void> {
+    const tradeId = ctx.match[1];
     await ctx.reply(`Confirming payment received for trade ${tradeId}...`);
     // Implementation for confirming payment
   }
 
-  private async handleDispute(ctx: Context): Promise<void> {
-    const tradeId = ctx.match![1];
+  private async handleDispute(ctx: Context & { match: RegExpMatchArray }): Promise<void> {
+    const tradeId = ctx.match[1];
     await ctx.reply(`Opening dispute for trade ${tradeId}...`);
     // Implementation for opening disputes
   }
 
-  private async handleCancelTrade(ctx: Context): Promise<void> {
-    const tradeId = ctx.match![1];
+  private async handleCancelTrade(ctx: Context & { match: RegExpMatchArray }): Promise<void> {
+    const tradeId = ctx.match[1];
     await ctx.reply(`Cancelling trade ${tradeId}...`);
     // Implementation for cancelling trades
   }
