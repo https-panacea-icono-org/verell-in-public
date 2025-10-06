@@ -7,7 +7,7 @@ export class TelegramBot {
   private bot: Telegraf;
   private tradeManager: TradeManager;
   private tonService: TONService;
-  private userSessions: Map<number, any> = new Map();
+  private userSessions: Map<number, Record<string, unknown>> = new Map();
 
   constructor(token: string, tradeManager: TradeManager, tonService: TONService) {
     this.bot = new Telegraf(token);
@@ -70,7 +70,8 @@ Your trades are secured by smart contract escrow on TON blockchain.
     let message = '💰 **Available Sell Orders:**\n\n';
     
     sellOrders.slice(0, 10).forEach((order, index) => {
-      message += `${index + 1}. ${order.cryptoAmount} ${order.cryptoCurrency} for ${order.amount} ${order.currency}\n`;
+      const cryptoAmount = (order.amount / order.price).toFixed(2);
+      message += `${index + 1}. ${cryptoAmount} ${order.cryptoCurrency} for ${order.amount} ${order.currency}\n`;
       message += `   Price: ${order.price} ${order.currency}/${order.cryptoCurrency}\n`;
       message += `   Payment: ${order.paymentMethods.join(', ')}\n`;
       message += `   Order ID: \`${order.id}\`\n\n`;
@@ -207,18 +208,22 @@ Your trades are secured by smart contract escrow on TON blockchain.
     const [action, ...params] = data.split(':');
 
     switch (action) {
-      case 'accept_order':
+      case 'accept_order': {
         await this.handleAcceptOrder(ctx, params[0]);
         break;
-      case 'confirm_payment':
+      }
+      case 'confirm_payment': {
         await this.handleConfirmPayment(ctx, params[0]);
         break;
-      case 'release_funds':
+      }
+      case 'release_funds': {
         await this.handleReleaseFunds(ctx, params[0]);
         break;
-      case 'dispute':
+      }
+      case 'dispute': {
         await this.handleDispute(ctx, params[0]);
         break;
+      }
     }
 
     await ctx.answerCbQuery();
@@ -336,12 +341,14 @@ Your trades are secured by smart contract escrow on TON blockchain.
       case '❓ Help':
         await this.handleHelp(ctx);
         break;
-      default:
+      default: {
         // Check if user is in a session awaiting input
         const session = this.userSessions.get(userId);
         if (session) {
           // Handle session-specific input
         }
+        break;
+      }
     }
   }
 

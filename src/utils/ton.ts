@@ -4,11 +4,13 @@ import { EscrowOperation } from '../types';
 
 export class TONService {
   private client: TonClient;
-  private escrowAddress: Address;
+  private escrowAddress?: Address;
 
   constructor(endpoint: string, escrowAddress: string) {
     this.client = new TonClient({ endpoint });
-    this.escrowAddress = Address.parse(escrowAddress);
+    if (escrowAddress) {
+      this.escrowAddress = Address.parse(escrowAddress);
+    }
   }
 
   /**
@@ -30,7 +32,7 @@ export class TONService {
   /**
    * Fund escrow (buyer sends funds)
    */
-  async fundEscrow(tradeId: string): Promise<Cell> {
+  async fundEscrow(_tradeId: string): Promise<Cell> {
     const body = beginCell()
       .storeUint(2, 32) // op: fund
       .endCell();
@@ -41,7 +43,7 @@ export class TONService {
   /**
    * Release funds to seller
    */
-  async releaseFunds(tradeId: string): Promise<Cell> {
+  async releaseFunds(_tradeId: string): Promise<Cell> {
     const body = beginCell()
       .storeUint(3, 32) // op: release
       .endCell();
@@ -52,7 +54,7 @@ export class TONService {
   /**
    * Refund to buyer
    */
-  async refundEscrow(tradeId: string): Promise<Cell> {
+  async refundEscrow(_tradeId: string): Promise<Cell> {
     const body = beginCell()
       .storeUint(4, 32) // op: refund
       .endCell();
@@ -63,7 +65,7 @@ export class TONService {
   /**
    * Open dispute
    */
-  async openDispute(tradeId: string): Promise<Cell> {
+  async openDispute(_tradeId: string): Promise<Cell> {
     const body = beginCell()
       .storeUint(5, 32) // op: dispute
       .endCell();
@@ -74,7 +76,14 @@ export class TONService {
   /**
    * Get escrow data
    */
-  async getEscrowData(escrowAddress: string): Promise<any> {
+  async getEscrowData(escrowAddress: string): Promise<{
+    buyerAddress: Address;
+    sellerAddress: Address;
+    amount: bigint;
+    status: number;
+    tradeId: bigint;
+    expiryTime: number;
+  }> {
     try {
       const address = Address.parse(escrowAddress);
       const result = await this.client.runMethod(address, 'get_escrow_data');

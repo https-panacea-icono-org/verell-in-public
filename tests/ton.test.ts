@@ -6,14 +6,14 @@ describe('TONService', () => {
   beforeEach(() => {
     tonService = new TONService(
       'https://testnet.toncenter.com/api/v2/jsonRPC',
-      'EQD1234567890abcdef'
+      '' // Empty address for testing
     );
   });
 
   describe('Address Validation', () => {
-    test('should validate correct TON address', () => {
-      const validAddress = 'EQD1234567890abcdef';
-      // Note: This may fail with real validation, adjust as needed
+    test('should validate correct TON address format', () => {
+      // Using a known valid TON testnet address format
+      const validAddress = '0:0000000000000000000000000000000000000000000000000000000000000000';
       try {
         const isValid = tonService.isValidAddress(validAddress);
         expect(typeof isValid).toBe('boolean');
@@ -36,8 +36,8 @@ describe('TONService', () => {
         op: 1,
         tradeId: '12345',
         amount: 100,
-        buyerAddress: 'EQBuyer123',
-        sellerAddress: 'EQSeller456',
+        buyerAddress: '0:1111111111111111111111111111111111111111111111111111111111111111',
+        sellerAddress: '0:2222222222222222222222222222222222222222222222222222222222222222',
         expiryTime: Math.floor(Date.now() / 1000) + 86400
       };
 
