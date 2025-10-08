@@ -38,3 +38,9 @@ test('authentication and dummy payment transaction', async ({ page }) => {
   await notification.waitFor()
   expect(notification).toBeTruthy()
 })
+
+test('TON Connect button is visible', async ({ page }) => {
+  // TON Connect button should be visible on the page
+  const tonConnectButton = page.getByTestId('ton-connect-button')
+  await expect(tonConnectButton).toBeVisible()
+})
