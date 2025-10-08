@@ -22,8 +22,7 @@ const TonConnectSection: FC<TonConnectSectionProps> = ({ network }) => {
     <div className="card bg-slate-100 text-gray-900 p-6 rounded-lg shadow-sm">
       <h2 className="text-xl font-semibold mb-2">Conecta tu billetera TON</h2>
       <p className="text-sm mb-4">
-        Escanea el código QR o abre Telegram Wallet directamente para conectar tu cuenta mediante TON Connect en la red
-        principal.
+        Escanea el código QR o abre Telegram Wallet directamente para conectar tu cuenta mediante TON Connect en la red principal.
       </p>
       <div className="flex justify-center mb-4" data-test-id="ton-connect-button">
         <TonConnectButton />
