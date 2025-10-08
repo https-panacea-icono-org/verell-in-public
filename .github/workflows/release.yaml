@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.vscode/**'
+      - '.idea/**'
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  verell-app-contracts-validate:
+    name: Run verell-app-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/verell-app-contracts-ci.yaml
+
+  verell-app-contracts-release:
+    name: Run verell-app-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/verell-app-contracts-cd.yaml
+    needs: verell-app-contracts-validate
+
+  verell-app-frontend-validate:
+    name: Run verell-app-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/verell-app-frontend-ci.yaml
+
+  verell-app-frontend-release:
+    name: Run verell-app-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/verell-app-frontend-cd.yaml
+    needs: verell-app-frontend-validate
