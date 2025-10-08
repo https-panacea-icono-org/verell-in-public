@@ -5,7 +5,7 @@ import { SnackbarProvider } from 'notistack'
 import Home from './Home'
 import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
 import type { TonConnectChain } from './config/tonConnect'
-import { getTonConnectManifestUrl, getTonConnectNetwork, getTonConnectPreferredWallet } from './config/tonConnect'
+import { getTonConnectManifestUrl, getTonConnectNetwork } from './config/tonConnect'
 
 let supportedWallets: SupportedWallet[]
 if (import.meta.env.VITE_ALGOD_NETWORK === 'localnet') {
@@ -33,11 +33,6 @@ if (import.meta.env.VITE_ALGOD_NETWORK === 'localnet') {
 export default function App() {
   const algodConfig = getAlgodConfigFromViteEnvironment()
   const tonConnectManifestUrl = useMemo(() => getTonConnectManifestUrl(), [])
-  const tonConnectWalletsConfiguration = useMemo(() => {
-    const preferredWallet = getTonConnectPreferredWallet()
-    const includeWallets = Array.from(new Set([preferredWallet, 'tonkeeper', 'tonhub']))
-    return { includeWallets }
-  }, [])
   const tonConnectNetwork = useMemo<TonConnectChain>(() => getTonConnectNetwork(), [])
 
   const walletManager = useMemo(
@@ -63,7 +58,7 @@ export default function App() {
 
   return (
     <SnackbarProvider maxSnack={3}>
-      <TonConnectUIProvider manifestUrl={tonConnectManifestUrl} walletsListConfiguration={tonConnectWalletsConfiguration}>
+      <TonConnectUIProvider manifestUrl={tonConnectManifestUrl}>
         <WalletProvider manager={walletManager}>
           <Home tonNetwork={tonConnectNetwork} />
         </WalletProvider>
