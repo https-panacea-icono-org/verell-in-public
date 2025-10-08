@@ -61,6 +61,10 @@ After linking, you need to retrieve three pieces of information:
 
 ### 5. Add GitHub Secrets
 
+The deployment workflow uses a GitHub Environment called `frontend-prod`. You have two options:
+
+#### Option A: Repository Secrets (Simpler)
+
 Go to your GitHub repository settings:
 
 1. Navigate to: `Settings` > `Secrets and variables` > `Actions`
@@ -75,6 +79,17 @@ Go to your GitHub repository settings:
    
    - **Name:** `VERCEL_PROJECT_ID`
      - **Value:** (paste the projectId from project.json)
+
+#### Option B: Environment Secrets (Recommended for Multiple Environments)
+
+If you want to use the `frontend-prod` environment for additional protection:
+
+1. Navigate to: `Settings` > `Environments`
+2. Create or select the `frontend-prod` environment
+3. Add the same three secrets to this environment
+4. Optionally configure deployment protection rules
+
+**Note:** If using Environment secrets, the workflow will require approval before deploying (if protection rules are enabled).
 
 ### 6. Configure Environment Variables in Vercel
 
