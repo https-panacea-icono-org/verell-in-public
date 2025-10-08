@@ -1,13 +1,17 @@
 // src/components/Home.tsx
 import { useWallet } from '@txnlab/use-wallet-react'
 import React, { useState } from 'react'
+import type { TonConnectChain } from './config/tonConnect'
 import ConnectWallet from './components/ConnectWallet'
+import TonConnectSection from './components/TonConnectSection'
 import Transact from './components/Transact'
 import AppCalls from './components/AppCalls'
 
-interface HomeProps {}
+interface HomeProps {
+  tonNetwork: TonConnectChain
+}
 
-const Home: React.FC<HomeProps> = () => {
+const Home: React.FC<HomeProps> = ({ tonNetwork }) => {
   const [openWalletModal, setOpenWalletModal] = useState<boolean>(false)
   const [openDemoModal, setOpenDemoModal] = useState<boolean>(false)
   const [appCallsDemoModal, setAppCallsDemoModal] = useState<boolean>(false)
@@ -36,7 +40,9 @@ const Home: React.FC<HomeProps> = () => {
             This starter has been generated using official AlgoKit React template. Refer to the resource below for next steps.
           </p>
 
-          <div className="grid">
+          <div className="grid gap-4">
+            <TonConnectSection network={tonNetwork} />
+
             <a
               data-test-id="getting-started"
               className="btn btn-primary m-2"

@@ -1,7 +1,11 @@
+import { useMemo } from 'react'
 import { SupportedWallet, WalletId, WalletManager, WalletProvider } from '@txnlab/use-wallet-react'
+import { TonConnectUIProvider } from '@tonconnect/ui-react'
 import { SnackbarProvider } from 'notistack'
 import Home from './Home'
 import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
+import type { TonConnectChain } from './config/tonConnect'
+import { getTonConnectManifestUrl, getTonConnectNetwork, getTonConnectPreferredWallet } from './config/tonConnect'
 
 let supportedWallets: SupportedWallet[]
 if (import.meta.env.VITE_ALGOD_NETWORK === 'localnet') {
@@ -28,29 +32,42 @@ if (import.meta.env.VITE_ALGOD_NETWORK === 'localnet') {
 
 export default function App() {
   const algodConfig = getAlgodConfigFromViteEnvironment()
+  const tonConnectManifestUrl = useMemo(() => getTonConnectManifestUrl(), [])
+  const tonConnectWalletsConfiguration = useMemo(() => {
+    const preferredWallet = getTonConnectPreferredWallet()
+    const includeWallets = Array.from(new Set([preferredWallet, 'tonkeeper', 'tonhub']))
+    return { includeWallets }
+  }, [])
+  const tonConnectNetwork = useMemo<TonConnectChain>(() => getTonConnectNetwork(), [])
 
-  const walletManager = new WalletManager({
-    wallets: supportedWallets,
-    defaultNetwork: algodConfig.network,
-    networks: {
-      [algodConfig.network]: {
-        algod: {
-          baseServer: algodConfig.server,
-          port: algodConfig.port,
-          token: String(algodConfig.token),
+  const walletManager = useMemo(
+    () =>
+      new WalletManager({
+        wallets: supportedWallets,
+        defaultNetwork: algodConfig.network,
+        networks: {
+          [algodConfig.network]: {
+            algod: {
+              baseServer: algodConfig.server,
+              port: algodConfig.port,
+              token: String(algodConfig.token),
+            },
+          },
         },
-      },
-    },
-    options: {
-      resetNetwork: true,
-    },
-  })
+        options: {
+          resetNetwork: true,
+        },
+      }),
+    [algodConfig],
+  )
 
   return (
     <SnackbarProvider maxSnack={3}>
-      <WalletProvider manager={walletManager}>
-        <Home />
-      </WalletProvider>
+      <TonConnectUIProvider manifestUrl={tonConnectManifestUrl} walletsListConfiguration={tonConnectWalletsConfiguration}>
+        <WalletProvider manager={walletManager}>
+          <Home tonNetwork={tonConnectNetwork} />
+        </WalletProvider>
+      </TonConnectUIProvider>
     </SnackbarProvider>
   )
 }
